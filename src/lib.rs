@@ -48,8 +48,8 @@
 //! ```rust,no_run
 //! use aethelred_sdk::{
 //!     AethelredClient, Network, Runtime, Device, Tensor,
-//!     nn::{Module, Linear, Sequential},
-//!     optim::Adam,
+//!     nn::{Module, Linear, ReLU, Sequential},
+//!     seals::CreateSealRequest,
 //! };
 //!
 //! #[tokio::main]
@@ -66,17 +66,21 @@
 //!     // Build model
 //!     let model = Sequential::new(vec![
 //!         Box::new(Linear::new(784, 256)),
-//!         Box::new(nn::ReLU),
+//!         Box::new(ReLU),
 //!         Box::new(Linear::new(256, 10)),
 //!     ]);
 //!
 //!     // Forward pass
-//!     let output = model.forward(&x)?;
+//!     let _output = model.forward(&x)?;
 //!
 //!     // Submit to blockchain
 //!     let client = AethelredClient::new(Network::Testnet).await?;
-//!     let seal = client.seals().create(&output).await?;
-//!     println!("Seal ID: {}", seal.id);
+//!     let seal = client.seals().create(CreateSealRequest {
+//!         job_id: "example-job".to_string(),
+//!         regulatory_info: None,
+//!         expires_in_blocks: None,
+//!     }).await?;
+//!     println!("Seal ID: {}", seal.seal_id);
 //!
 //!     Ok(())
 //! }
@@ -95,7 +99,6 @@
 //! - `quantize` - Enable quantization support
 
 #![allow(missing_docs)]
-#![allow(rustdoc::missing_doc_code_examples)]
 #![allow(dead_code)]
 
 // ============ Core Modules ============
